@@ -46,7 +46,7 @@ void* f_rolo(void *v) {
     ThreadArgs *args = (ThreadArgs*)v;
     int id = args->id;
     int N_BOBINAS = *(args->N_BOBINAS);
-    int N_TECELOES = *(args->N_TECELOES);
+
     
     sleep(rand() % 3);
     
