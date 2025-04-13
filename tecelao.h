@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-/* Variáveis globais (agora definidas em tempo de execução) */
+/* Variáveis globais */
 extern int N_ROLOS;
 extern int N_TECELOES;
 extern int N_BOBINAS;
