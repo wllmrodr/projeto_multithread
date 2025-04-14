@@ -59,7 +59,17 @@ Projeto Multithread (Simulação de Fábrica de Tecelagem)
 
     • Símbolos:
 
-        ↣: Rolo entrando na fábrica
-        ✓: Rolo pronto (tecido finalizado)
+        >: Rolo entrando na fábrica
+        X: Rolo pronto (tecido finalizado)
+        T: Rolo sendo tecido
+        ... : Esperando
         ZZZ: Tecelão dormindo
+
+
+
+📚 Bibliotecas externas utilizadas
+
+    • time.h: Usada para controlar tempos e atrasos no funcionamento das threads.
+    • errno.h: Usada para verificar erros em chamadas de sistema (como criação de threads, arquivos e alocação).
+    • unistd.h: Fornece funções de baixo nível do sistema operacional UNIX/Linux, como: sleep(int segundos) – pausa uma thread por um número de segundos.
     
