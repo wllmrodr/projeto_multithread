@@ -25,6 +25,9 @@ sem_t sem_escreve_painel, sem_le_painel;
 sem_t sem_estados;
 int painel;
 
+/* Variável de controle para finalizar as threads */
+volatile int running = 1;
+
 /* Inicialização do ncurses com verificação de erros */
 void init_ncurses() {
     if (!initscr()) {
@@ -79,7 +82,7 @@ void atualiza_tela() {
                 printw("R%02dX ", i);
                 break;
             case F:
-                printw("      "); // Não exibe rolos liberados
+                printw("      "); // Rolos finalizados não são exibidos
                 break;
         }
     }
@@ -130,9 +133,8 @@ void atualiza_tela() {
     refresh();
 }
 
-/* Liberação de recursos */
-void cleanup() {
-    endwin();
+/* Liberação dos recursos alocados na memória */
+void free_memory() {
     free(estadoR);
     free(estadoT);
     free(estadoBobina);
@@ -141,6 +143,12 @@ void cleanup() {
     free(sem_tear);
     free(sem_tecido_pronto);
     free(sem_rolo_no_tear);
+}
+
+/* Liberação dos recursos (ncurses e semáforos) */
+void cleanup() {
+    endwin();
+    free_memory();
 }
 
 int main(int argc, char *argv[]) {
@@ -160,6 +168,7 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
     init_ncurses();
     
+    /* Alocação dos estados e recursos */
     estadoR = (estado_r*)calloc(N_ROLOS, sizeof(estado_r));
     estadoT = (estado_t*)calloc(N_TECELOES, sizeof(estado_t));
     estadoBobina = (estado_bobina*)calloc(N_BOBINAS, sizeof(estado_bobina));
@@ -235,7 +244,39 @@ int main(int argc, char *argv[]) {
         napms(100);
     }
     
+    /* Sinaliza término para as threads */
+    running = 0;
+    /* Libera as threads bloqueadas nos semáforos dos tecelões */
+    for (int i = 0; i < N_TECELOES; i++) {
+        sem_post(&sem_rolo_no_tear[i]);
+        sem_post(&sem_tear[i]);
+    }
+    /* Libera as threads de rolos que possam estar bloqueadas em sem_bobinas */
+    for (int i = 0; i < N_ROLOS; i++) {
+        sem_post(&sem_bobinas);
+    }
+    
+    /* Aguarda o término das threads */
+    for (int i = 0; i < N_TECELOES; i++) {
+        pthread_join(thr_teceloes[i], NULL);
+    }
+    for (int i = 0; i < N_ROLOS; i++) {
+        pthread_join(thr_rolos[i], NULL);
+    }
+    
     cleanup();
+    
+    /* Destruição dos semáforos */
+    sem_destroy(&sem_bobinas);
+    sem_destroy(&sem_escreve_painel);
+    sem_destroy(&sem_le_painel);
+    sem_destroy(&sem_estados);
+    for (int i = 0; i < N_TECELOES; i++) {
+        sem_destroy(&sem_tear[i]);
+        sem_destroy(&sem_tecido_pronto[i]);
+        sem_destroy(&sem_rolo_no_tear[i]);
+    }
+    
     free(thr_rolos);
     free(thr_teceloes);
     free(args_rolos);
