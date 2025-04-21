@@ -1,4 +1,12 @@
-Projeto Multithread (Simulação de Fábrica de Tecelagem)
+Projeto Multithread (Simulação de Fábrica de Tecelagem)<br>
+MC504A-Sistemas Operacionais (1º semestre / 2025)  
+Professora Islene Calciolari Garcia  
+Alunos:  
+        • Antônio Carlos Carvalho Macedo (RA 199152)  
+        • Giovanni Mesquita Micaroni     (RA 231702)  
+        • Vicente José Campitelli Real   (RA 239834)  
+        • William Rodrigues Lopes        (RA 248499)  
+
  
 📌 Visão Geral do Projeto
 
