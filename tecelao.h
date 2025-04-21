@@ -9,7 +9,16 @@ extern int N_ROLOS;
 extern int N_TECELOES;
 extern int N_BOBINAS;
 
-/* Estados */
+/* Estados
+E = rolo entrando
+TT = tecendo
+P = pronto
+F = finalizado
+A = aguardando
+TO = tecelão ocupado
+O = ocioso
+C = cheia
+V = bobina vazia */
 typedef enum {E, TT, P, F, A} estado_r;
 typedef enum {TO, O} estado_t;
 typedef enum {C, V} estado_bobina;
